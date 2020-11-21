@@ -1,0 +1,19 @@
+{
+  "name": "popup",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "npx parcel src/index.html",
+    "build": "npx parcel build src/index.html -d ../ext/popup --public-url ./"
+  },
+  "license": "MIT",
+  "devDependencies": {},
+  "dependencies": {
+    "autoprefixer": "^10.0.2",
+    "axios": "^0.21.0",
+    "postcss": "^8.1.8",
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1",
+    "tailwindcss": "^2.0.1"
+  }
+}
