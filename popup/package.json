@@ -1,0 +1,22 @@
+{
+  "name": "popup",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "parcel src/index.html",
+    "build": "parcel build src/index.html -d ../ext/popup --public-url ./"
+  },
+  "license": "MIT",
+  "devDependencies": {},
+  "dependencies": {
+    "autoprefixer": "^10.0.2",
+    "axios": "^0.21.0",
+    "parcel-bundler": "^1.12.4",
+    "react": "^17.0.1",
+    "react-custom-scrollbars": "^4.2.1",
+    "react-dom": "^17.0.1",
+    "react-feather": "^2.0.9",
+    "tailwindcss": "^2.0.1",
+    "twitter-woeid": "^1.0.2"
+  }
+}
