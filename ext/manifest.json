@@ -1,0 +1,18 @@
+{
+  "name": "Trending",
+  "version": "0.0.1",
+  "manifest_version": 2,
+  "description": "Get updates of trending topics on twitter in your location or any location of your choice without visiting the twitter official page",
+  // "homepage_url": "https://pageverse.app",
+  // "icons": {
+  //   "16": "icons/icon16.png",
+  //   "48": "icons/icon48.png",
+  //   "128": "icons/icon128.png"
+  // },
+  "browser_action": {
+    "default_popup": "./popup/index.html"
+  },
+
+  "permissions": ["geolocation", "storage", "tabs"]
+  // "content_security_policy": "script-src 'self' 'sha256-cUC2SAIS8D/nbg1acP5I9mCqNjJndlyDlVd///GMOYM='; object-src 'self'"
+}
