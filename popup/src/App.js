@@ -67,12 +67,14 @@ export default class App extends Component {
         const lat = location.coords.latitude
         const long = location.coords.longitude
 
+        console.log(lat, long)
+
         return axios
           .post(`${SERVER}/default`, { lat, long })
           .then(({ data }) => {
             if (data.success) {
               this.setState({ trends: data.data[0].trends, trendsLocation: data.location, isLoading: false })
-              console.log('loaded')
+              console.log(data.data[0].trends)
             }
           })
           .catch((err) => console.log(err))
