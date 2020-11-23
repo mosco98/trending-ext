@@ -3,7 +3,10 @@
   height: 35rem;
   overflow-y: hidden;
   overflow-x: hidden;
-  transition: all 1s ease-in-out !important;
+}
+
+.app {
+  transition: all 0.2s ease-in-out !important;
 }
 
 nav {
@@ -11,6 +14,7 @@ nav {
   top: 0;
   width: 24.7rem;
   height: 4.3rem;
+  transition: all 0.2s ease-in-out !important;
 }
 
 .list-group {

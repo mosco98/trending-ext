@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { ArrowLeft, ChevronRight } from 'react-feather'
 
-import Countries from '../views/Countries'
+import Countries from './Countries'
 
 const TrendsSettings = ({
   trendsSettingsHandler,
@@ -45,7 +45,7 @@ const TrendsSettings = ({
             <div>
               <p>Explore locations</p>
               <small className="font-light">
-                {preferredLocation ? preferredLocation : `You'll see what's happening around you right now.`}
+                {preferredLocation ? preferredLocation.country : `You'll see what's happening around you right now.`}
               </small>
             </div>
             <ChevronRight />

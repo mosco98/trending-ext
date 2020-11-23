@@ -5,8 +5,8 @@ const countries = [
         place_id: '-7293673535050703919',
         name: 'Afghanistan',
         location_type: 'Country',
-        lat: 33.9391,
-        long: 67.71
+        lat: 34.5553,
+        long: 69.2075
       }
     },
     id: '-7293673535050703919'

@@ -3,7 +3,7 @@ const router = express.Router()
 
 const trendsControllers = require('./controllers/trends')
 
-router.post('/default', trendsControllers.getTrendsWithUserLocation)
-// router.post('/preferred', trendsControllers.getTrendsWithPreferredLocation)
+router.post('/', trendsControllers.getTrendsWithUserLocation)
+router.post('/preferred', trendsControllers.preferredLocation)
 
 module.exports = router
