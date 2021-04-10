@@ -2,13 +2,12 @@
 import axios from 'axios'
 import React, { Component } from 'react'
 import { Scrollbars } from 'react-custom-scrollbars'
-import { Settings } from 'react-feather'
+import ErrorPage from './components/ErrorPage'
 
 import ListCard from './components/ListCard'
 import Loader from './components/Loader'
 import NavBar from './components/NavBar'
 import storage from './utils/storage'
-import TrendsSettings from './views/TrendsSettings'
 
 const SERVER = 'http://localhost:8080'
 
@@ -28,29 +27,11 @@ export default class App extends Component {
   }
 
   componentDidMount() {
-    // Check user preferred location in local storage
-    storage.getItem('preferredLocation').then((result) => {
-      const preferredLocation = JSON.parse(result)
-      this.setState({ preferredLocation })
-    })
-    // Check user location preference in local storage
-    storage.getItem('isDefaultLocation').then((result) => {
-      // Parse boolean stored in local storage
-      const isDefaultLocation = JSON.parse(result)
-      if (isDefaultLocation === null || isDefaultLocation) {
-        this.getDefaultLocationTrends()
-        return this.setState({ isDefaultLocation: true })
-      }
-
-      if (!isDefaultLocation && this.state.preferredLocation) {
-        // load trends with preferred location
-        this.getPreferredLocationTrends(this.state.preferredLocation)
-        return this.setState({ isDefaultLocation: false })
-      } else {
-        storage.setItem('isDefaultLocation', true)
-        return this.setState({ isDefaultLocation: true })
-      }
-    })
+    if (navigator.onLine) {
+      this.getDefaultLocationTrends()
+    } else {
+      this.setState({ error: true, isLoading: false })
+    }
 
     // Check user theme preference
     storage.getItem('theme').then((theme) => {
@@ -63,7 +44,9 @@ export default class App extends Component {
   }
 
   getDefaultLocationTrends = () => {
-    console.log('Default location trends loading...')
+    if (!navigator.onLine) {
+      return this.setState({ error: true, isLoading: false })
+    }
     navigator.geolocation.getCurrentPosition((location, err) => {
       if (location) {
         const lat = location.coords.latitude
@@ -76,7 +59,11 @@ export default class App extends Component {
               this.setState({ trends: data.data[0].trends, trendsLocation: data.location, isLoading: false })
             }
           })
-          .catch((err) => console.log(err))
+          .catch((err) => {
+            if (err) {
+              this.setState({ error: true, isLoading: false })
+            }
+          })
       }
 
       if (err) {
@@ -85,68 +72,23 @@ export default class App extends Component {
     })
   }
 
-  // getPreferredLocationTrends = (preferredLocation) => {
-  //   if (!preferredLocation) {
-  //     return
-  //   }
-  //   const { lat, long, country } = preferredLocation
-  //   axios
-  //     .post(`${SERVER}/preferred`, { lat, long })
-  //     .then(({ data }) => {
-  //       if (data.success) {
-  //         this.setState({ trends: data.data[0].trends, trendsLocation: data.location, isLoading: false })
-  //       }
-  //     })
-  //     .catch((err) => {
-  //       if (err) {
-  //         return this.setState({ error: true })
-  //       }
-  //     })
-  // }
-
-  // setDefaultLocationHandler = (e) => {
-  //   this.setState({ isDefaultLocation: e.target.checked })
-  //   if (e.target.checked) {
-  //     this.getDefaultLocationTrends()
-  //     storage.setItem('isDefaultLocation', true)
-  //   } else {
-  //     this.getPreferredLocationTrends(this.state.preferredLocation)
-  //     storage.setItem('isDefaultLocation', false)
-  //   }
-  // }
-
-  // setPreferedLocationHandler = (country, lat, long) => {
-  //   const preferredLocation = { country, lat, long }
-  //   Promise.all([
-  //     storage.setItem('preferredLocation', JSON.stringify(preferredLocation)),
-  //     storage.setItem('isDefaultLocation', false)
-  //   ]).then(() => {
-  //     this.setState({ preferredLocation, isDefaultLocation: false })
-  //     this.getPreferredLocationTrends(preferredLocation)
-  //   })
-  // }
-
   setThemeHandler = (theme) => {
     this.setState({ theme })
     storage.setItem('theme', theme)
   }
 
-  // trendsSettingsHandler = () => {
-  //   this.setState({ showTrendsSettings: !this.state.showTrendsSettings })
-  // }
+  refreshHandler = () => {
+    this.setState({ error: false, isLoading: true })
+    this.getDefaultLocationTrends()
+  }
 
   render() {
-    const {
-      theme,
-      trends,
-      isDefaultLocation,
-      preferredLocation,
-      showTrendsSettings,
-      trendsLocation,
-      isLoading
-    } = this.state
+    const { theme, trends, trendsLocation, isLoading, error } = this.state
     if (isLoading) {
       return <Loader theme={theme} />
+    }
+    if (error) {
+      return <ErrorPage theme={theme} refreshHandler={this.refreshHandler} />
     }
     return (
       <div
@@ -163,11 +105,6 @@ export default class App extends Component {
               <h1 className={theme === 'light' ? 'font-bold text-black' : 'font-bold text-white'}>
                 {trendsLocation} trends
               </h1>
-              {/* <Settings
-                className={theme === 'light' ? 'cursor-pointer text-black' : 'cursor-pointer text-blue-500'}
-                size="19"
-                onClick={this.trendsSettingsHandler}
-              /> */}
             </div>
             <hr />
             {trends.map((trend, i) => (
@@ -176,17 +113,6 @@ export default class App extends Component {
             <div className="px-3 py-5" />
           </div>
         </Scrollbars>
-
-        {/* {showTrendsSettings && (
-          <TrendsSettings
-            trendsSettingsHandler={this.trendsSettingsHandler}
-            theme={theme}
-            isDefaultLocation={isDefaultLocation}
-            setDefaultLocationHandler={this.setDefaultLocationHandler}
-            setPreferedLocationHandler={this.setPreferedLocationHandler}
-            preferredLocation={preferredLocation}
-          />
-        )} */}
       </div>
     )
   }

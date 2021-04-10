@@ -3,7 +3,11 @@ const config = require('../config/config')
 
 exports.getTrendsWithUserLocation = async (req, res) => {
   const { lat, long } = req.body
-  console.log(lat, long)
+
+  if (lat === '' || long === '') {
+    return
+  }
+
   const userLocationResponse = await needle(
     'get',
     `https://api.twitter.com/1.1/trends/closest.json?lat=${lat}&long=${long}`,
@@ -13,8 +17,6 @@ exports.getTrendsWithUserLocation = async (req, res) => {
       }
     }
   )
-
-  console.log(userLocationResponse.body)
 
   if (userLocationResponse.body) {
     const userLocationInfo = userLocationResponse.body[0]
