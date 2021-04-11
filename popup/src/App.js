@@ -1,28 +1,26 @@
-/* global chrome */
 import axios from 'axios'
 import React, { Component } from 'react'
 import { Scrollbars } from 'react-custom-scrollbars'
-import ErrorPage from './components/ErrorPage'
 
+import ErrorPage from './components/ErrorPage'
 import ListCard from './components/ListCard'
 import Loader from './components/Loader'
 import NavBar from './components/NavBar'
 import storage from './utils/storage'
 
-const SERVER = 'http://localhost:8080'
+const SERVER = 'https://trending-ext-server.herokuapp.com'
 
 export default class App extends Component {
   constructor() {
     super()
     this.state = {
       isDefaultLocation: true,
-      preferredLocation: {},
       theme: 'light',
       trends: [],
       trendsLocation: null,
       isLoading: true,
-      showTrendsSettings: false,
-      error: false
+      error: false,
+      errMsg: ''
     }
   }
 
@@ -44,6 +42,7 @@ export default class App extends Component {
   }
 
   getDefaultLocationTrends = () => {
+    this.setState({ error: false, errMsg: '' })
     if (!navigator.onLine) {
       return this.setState({ error: true, isLoading: false })
     }
@@ -58,16 +57,19 @@ export default class App extends Component {
             if (data.success) {
               this.setState({ trends: data.data[0].trends, trendsLocation: data.location, isLoading: false })
             }
+            if (data.error) {
+              this.setState({ error: true, isLoading: false, errMsg: data.msg })
+            }
           })
           .catch((err) => {
             if (err) {
-              this.setState({ error: true, isLoading: false })
+              this.setState({ error: true, isLoading: false, errMsg: 'Network error' })
             }
           })
       }
 
       if (err) {
-        return console.log('Cannot detect location')
+        return this.setState({ error: true, isLoading: false, errMsg: 'Network error' })
       }
     })
   }
@@ -78,17 +80,17 @@ export default class App extends Component {
   }
 
   refreshHandler = () => {
-    this.setState({ error: false, isLoading: true })
+    this.setState({ error: false, isLoading: true, errMsg: '' })
     this.getDefaultLocationTrends()
   }
 
   render() {
-    const { theme, trends, trendsLocation, isLoading, error } = this.state
+    const { theme, trends, trendsLocation, isLoading, error, errMsg } = this.state
     if (isLoading) {
       return <Loader theme={theme} />
     }
     if (error) {
-      return <ErrorPage theme={theme} refreshHandler={this.refreshHandler} />
+      return <ErrorPage theme={theme} refreshHandler={this.refreshHandler} errMsg={errMsg} />
     }
     return (
       <div
