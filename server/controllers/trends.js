@@ -5,7 +5,7 @@ exports.getTrendsWithUserLocation = async (req, res) => {
   const { lat, long } = req.body
 
   if (lat === '' || long === '') {
-    return
+    return res.json({ error: true, msg: 'Your location is turned off. Please enable location' })
   }
 
   const userLocationResponse = await needle(
@@ -43,8 +43,6 @@ exports.getTrendsWithUserLocation = async (req, res) => {
     return res.json({ error: true, msg: 'Network error' })
   }
 }
-
-// exports.getTrendsWithUserLocation = (req, res) => {}
 
 exports.preferredLocation = async (req, res) => {
   const userLocationResponse = await needle('get', `https://api.twitter.com/1.1/trends/place.json?id=23424739`, {
