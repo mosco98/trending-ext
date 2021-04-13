@@ -13,6 +13,6 @@
     "default_popup": "./popup/index.html"
   },
 
-  "permissions": ["geolocation", "storage", "tabs"],
+  "permissions": ["geolocation", "storage"],
   "content_security_policy": "script-src 'self' 'sha256-p2EdDQS1ZzBmo0ng9n7lMBTF1fkvbzOEWZ9EYrqtbzY='; object-src 'self'"
 }

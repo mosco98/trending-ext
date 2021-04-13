@@ -44,7 +44,7 @@ export default class App extends Component {
   getDefaultLocationTrends = () => {
     this.setState({ error: false, errMsg: '' })
     if (!navigator.onLine) {
-      return this.setState({ error: true, isLoading: false })
+      return this.setState({ error: true, isLoading: false, errMsg:'Network error' })
     }
     navigator.geolocation.getCurrentPosition((location, err) => {
       if (location) {
