@@ -45,7 +45,8 @@ export function AppContextProvider({ children }) {
       setErrMsg("Network error")
       return
     }
-    navigator.geolocation.getCurrentPosition(async (location, err) => {
+
+    async function getLocationAndFetchData(location, err) {
       if (location) {
         const lat = location.coords.latitude
         const long = location.coords.longitude
@@ -76,7 +77,9 @@ export function AppContextProvider({ children }) {
         updateIsLoading(false)
         setErrMsg(`Couldn't detect location`)
       }
-    })
+    }
+
+    navigator.geolocation.getCurrentPosition(getLocationAndFetchData)
   }
 
   function setThemeHandler(theme) {
